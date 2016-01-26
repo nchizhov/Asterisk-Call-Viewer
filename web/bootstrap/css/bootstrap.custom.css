@@ -1,0 +1,58 @@
+.btn-file {
+  position: relative;
+  overflow: hidden;
+}
+.btn-file input[type=file] {
+  position: absolute;
+  top: 0;
+  right: 0;
+  min-width: 100%;
+  min-height: 100%;
+  font-size: 100px;
+  text-align: right;
+  filter: alpha(opacity=0);
+  opacity: 0;
+  outline: none;
+  background: white;
+  cursor: inherit;
+  display: block;
+}
+
+.panel {
+  margin-bottom: 10px;
+}
+
+.panel-body {
+  padding: 6px;
+}
+
+.panel-heading {
+  font-weight: bold;
+  font-size: 14px;
+  text-align: center;
+}
+
+.panel-body {
+  background-color: #fbfbfb;
+}
+
+.form-group {
+  margin-bottom: 5px !important;
+}
+
+.btn-xs {
+  padding: 6px 15px !important;
+  font-size: 12px !important;
+  line-height: normal;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+}
+
+select.form-control {
+  padding: 2px 5px !important;
+}
+
+input.form-control {
+  padding: 5px !important;
+}

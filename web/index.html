@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Активность звонков v.2</title>
+  <link rel="stylesheet" href="css/jquery.ui.css" />
+  <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="bootstrap/css/bootstrap-theme.min.css" />
+  <link rel="stylesheet" href="bootstrap/css/bootstrap.custom.css" />
+  <link rel="stylesheet" href="css/styles.css" />
+
+  <script>
+    var ws_ip = "192.168.0.7"; //WebSocket Address
+    var ws_port = "8888";         //WebSocket Port
+
+    var shapeshift_config = {     //Shapeshift Defaults
+      align: "center",
+      gutterX: 5,
+      gutterY: 5,
+      colWidth: 170,
+      minHeight: 50
+    };
+  </script>
+
+  <script src="js/app.min.js"></script>
+  <script src="bootstrap/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div class="container-fluid">
+  <div id="sortable" class="row"></div>
+  <div class="row">
+    <div class="col-sm-12" style="text-align: center;">
+      <div class="btn-group" role="group">
+        <button type="button" id="export_config" class="btn btn-xs btn-success" style="width: 150px;">Сохранить настройки</button>
+        <span id="import_config" class="btn btn-xs btn-info btn-file" style="width: 150px;">
+          Загрузить настройки
+          <input type="file" />
+        </span>
+        <button type="button" id="reset_config" class="btn btn-xs btn-danger" style="width: 150px">Сбросить настройки</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Dialog Window -->
+<div class="dialog-config hide">
+  <div class="row h4 config-add" style="text-align: center; font-weight: bold;">Добавление группы</div>
+  <form id="config" role="form">
+    <div class="form-group form-group-sm">
+      <label>Название группы</label>
+      <input type="text" class="form-control config-title" />
+    </div>
+    <div class="form-group form-group-sm">
+      <label>Цвет группы</label>
+      <select class="form-control config-color">
+        <option value="primary" class="config-color-primary">Синий</option>
+        <option value="success" class="config-color-success">Зеленый</option>
+        <option value="info" class="config-color-info">Голубой</option>
+        <option value="warning" class="config-color-warning">Бежевый</option>
+        <option value="danger" class="config-color-danger">Красный</option>
+      </select>
+    </div>
+    <div class="form-group form-group-sm">
+      <label>Ширина блока</label>
+      <select class="form-control config-size">
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>
+        <option value="11">11</option>
+        <option value="12">12</option>
+      </select>
+    </div>
+    <div class="form-group form-group-sm" style="text-align: center; padding-top: 5px;">
+      <button type="submit" class="btn btn-default btn-xs" style="width: 100px; margin-right: 15px;">Применить</button>
+      <button type="button" class="btn btn-default btn-xs config-close" style="width: 100px;">Закрыть</button>
+    </div>
+  </form>
+</div>
+
+<!-- Container Panel -->
+<div class="etalon hide">
+  <div class="panel-size">
+    <div class="panel">
+      <div class="panel-heading">
+      <span class="panel-signs panel-start-signs">
+        <span class="glyphicon glyphicon-chevron-down action-collapse" aria-hidden="true" title="Свернуть/развернуть"></span>
+      </span>
+        <span class="panel-txt"></span>
+      <span class="panel-signs panel-end-signs">
+        <span class="glyphicon glyphicon-plus action-add" aria-hidden="true" title="Добавить группу"></span>
+        <span class="glyphicon glyphicon-tags action-config" aria-hidden="true" title="Настройка"></span>
+        <span class="glyphicon glyphicon-remove action-remove" aria-hidden="true" title="Удалить группу"></span>
+      </span>
+      </div>
+      <div class="panel-body container-calls">
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
