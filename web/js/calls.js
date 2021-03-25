@@ -190,10 +190,10 @@ $(document).ready(function() {
         break;
       case "status": //Setting statuses
         peer = $("#num_" + data.peer);
-        if (data.status == "Registered" && !peer.hasClass("busy")) {
+        if (["Registered", "Reachable"].includes(data.status) && !peer.hasClass("busy")) {
           peer.addClass("online");
         }
-        else if (data.status == "Unregistered") {
+        else if (["Unregistered", "Unreachable"].includes(data.status)) {
           peer.removeClass("online");
         }
         break;

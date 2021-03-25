@@ -9,6 +9,7 @@ import random
 
 class AMI(threading.Thread):
     eols = 1
+
     def __init__(self, host, port):
         self.host = host
         self.port = port
@@ -36,37 +37,43 @@ class AMI(threading.Thread):
             self.sock.close()
 
     def stop(self):
-        sdata = {'Action': 'logoff'}
+        sdata = {'Action': 'Logoff'}
         self.__sendCommand(sdata)
 
     """ parsing AMI """
     def __parseAMI(self, data):
-        #print repr(data)
         if 'Asterisk Call Manager' in data:
             self.eols = 2
             self.waitConnect = True
         else:
             data = data.split('\r\n')
             tmp_data = {}
+            raw_data = []
             for line in data:
                 if line.strip():
                     try:
-                        command, response = line.split(': ')
-                        tmp_data[command] = response.strip()
-                    except:
+                        command, response = line.split(': ', 1)
+                        response = response.strip()
+                        if command == 'Output':
+                            raw_data.append(response)
+                        else:
+                            tmp_data[command] = response
+                    except ValueError:
                         tmp_data['raw_data'] = line
                 else:
+                    if len(raw_data) and 'raw_data' not in tmp_data:
+                        tmp_data['raw_data'] = "\n".join(raw_data)
                     if 'ActionID' in tmp_data:
                         actionid = tmp_data['ActionID']
                         if actionid in self.action:
                             if self.action[actionid]['action'] == 'login':
                                 self.action[actionid]['data'] = tmp_data
                                 self.action[actionid]['wait'] = False
-                            elif self.action[actionid]['action'] in ('Sippeers', 'Iaxpeerlist'):
+                            elif self.action[actionid]['action'] in ('SIPpeers', 'IAXpeerlist', 'PJSIPShowEndpoints'):
                                 if 'Event' in tmp_data:
-                                    if tmp_data['Event'] == 'PeerEntry':
+                                    if tmp_data['Event'] in ('PeerEntry', 'EndpointList'):
                                         self.action[actionid].setdefault('data', list()).append(tmp_data)
-                                    elif tmp_data['Event'] == 'PeerlistComplete':
+                                    elif tmp_data['Event'] in ('PeerlistComplete', 'EndpointListComplete'):
                                         self.action[actionid]['wait'] = False
                             elif self.action[actionid]['action'] == 'peerext':
                                 self.action[actionid]['data'] = tmp_data
@@ -77,7 +84,6 @@ class AMI(threading.Thread):
                             else:
                                 pass
                     elif 'Event' in tmp_data:
-                        # print tmp_data
                         event = tmp_data['Event']
                         for wrap in self.wraps:
                             if event in wrap:
@@ -92,13 +98,13 @@ class AMI(threading.Thread):
                                     wrap[event]['function'](tmp_data)
                             else:
                                 pass
-                                # print tmp_data
+                    raw_data = []
                     tmp_data = {}
 
     """ Connecting """
     def connect(self, login, secret):
         actionid = self.__genActionID('login')
-        sdata = {'Action': 'login',
+        sdata = {'Action': 'Login',
                  'ActionID': actionid,
                  'Username': login,
                  'Secret': secret}
@@ -116,8 +122,14 @@ class AMI(threading.Thread):
             return False
 
     """ Get sip/aix2 peers """
-    def getpeers(self, peertype = 'sip'):
-        peer = 'Iaxpeerlist' if peertype.lower() == 'iax' else 'Sippeers'
+    def getpeers(self, peertype='sip'):
+        peertype = peertype.lower()
+        if peertype == 'iax':
+            peer = 'IAXpeerlist'
+        elif peertype == 'pjsip':
+            peer = 'PJSIPShowEndpoints'
+        else:
+            peer = 'SIPpeers'
         actionid = self.__genActionID(peer)
         sdata = {'Action': peer,
                  'ActionID': actionid}
@@ -144,7 +156,7 @@ class AMI(threading.Thread):
             try:
                 ext, name = line.split(':')
                 exts[ext.split('/')[2]] = name.strip()
-            except:
+            except ValueError:
                 pass
         return exts
 
@@ -195,7 +207,6 @@ class AMI(threading.Thread):
         for comm, val in data.iteritems():
             comm_line += "%s: %s\r\n" % (comm, val)
         if comm_line:
-            # print comm_line
             self.sock.sendall('%s\r\n' % comm_line)
 
     """ Generate ActionID """

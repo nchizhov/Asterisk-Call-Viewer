@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-config = {'host': '192.168.50.250',
+config = {'host': '192.168.8.70',
           'port': 5038,
-          'login': 'nikolay',
-          'secret': 'qwerty'}
+          'login': 'zvonok_test',
+          'secret': 'zvonok!55'}

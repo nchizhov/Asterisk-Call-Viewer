@@ -25,11 +25,12 @@ class MainAMI:
                                          'filter': {'PeerStatus': 'Registered'}}})
         self.ami.wrapper({'PeerStatus': {'function': self.wraps.peer_status}})
         self.ami.wrapper({'ExtensionStatus': {'function': self.wraps.ext_status}})
-        self.ami.wrapper({'Dial': {'function': self.wraps.dial_start,
-                                   'filter': {'SubEvent': 'Begin'}}})
+        self.ami.wrapper({'DialBegin': {'function': self.wraps.dial_start}})
 
 
 """ Daemonize """
+
+
 class AMIDaemon(Daemon):
     def run(self):
         MainAMI()

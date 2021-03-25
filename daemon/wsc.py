@@ -6,7 +6,11 @@ from json import dumps, loads
 import threading
 from uuid import uuid4
 
+
 class SocketHandler(websocket.WebSocketHandler):
+    def data_received(self, chunk):
+        pass
+
     clients = {}
 
     def __init__(self, *argv, **kwargs):
